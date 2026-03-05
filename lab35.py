@@ -85,10 +85,35 @@ rx_eq = best_rx_symbols * np.exp(-1j * best_omega * n_all) / best_h
 rx_hard = min_dist_detection(rx_eq, const).ravel()
 phase_err = np.angle(rx_eq * np.conj(rx_hard))
 theta = np.zeros_like(phase_err)
-alpha = 0.03
+alpha = 0.01
 for k in range(1, len(theta)):
     theta[k] = theta[k - 1] + alpha * phase_err[k]
 rx_eq = rx_eq * np.exp(-1j * theta)
+
+# 7-tap LMS equalizer: pilot-trained, then decision-directed.
+eq_taps = 7
+mu_train = 0.001
+mu_dd = 0.0008
+half = eq_taps // 2
+w = np.zeros(eq_taps, dtype=np.complex128)
+w[half] = 1.0 + 0j
+rx_pad = np.pad(rx_eq, (half, half), mode='constant')
+rx_lms = np.zeros_like(rx_eq, dtype=np.complex128)
+
+for n in range(len(rx_eq)):
+    x = rx_pad[n:n + eq_taps][::-1]
+    y = np.vdot(w, x)
+    if n < num_pilots:
+        d = tx_symbols[n]
+        e = d - y
+        w += mu_train * np.conj(e) * x
+    else:
+        d = min_dist_detection(np.array([y]), const).ravel()[0]
+        e = d - y
+        w += mu_dd * np.conj(e) * x
+    rx_lms[n] = y
+
+rx_eq = rx_lms
 
 rx_detected = min_dist_detection(rx_eq, const)
 
