@@ -19,11 +19,34 @@ This repo contains the Lab 3 TX/RX processing chain for Pluto SDR experiments.
   - pilot-based timing/CFO/channel estimation,
   - residual phase tracking,
   - **7-tap LMS equalizer** (pilot-trained then decision-directed).
-- Tuned receiver params in `lab35.py`:
-  - `alpha = 0.01`
+
+## Current Parameters (In Code)
+
+### Core DSP (`lab31.py`, `lab33.py`, `lab34.py`, `lab35.py`)
+- `N = 1000`
+- `symbols_per_sec = 1e5`
+- `samples_per_symbol = 10`
+- Pulse shaping: `RRC`
+- `RRC beta = 0.5`
+- `RRC span = 10`
+
+### Receiver Tuning (`lab35.py`)
+- `num_pilots = min(400, N // 2)`
+- Phase tracker: `alpha = 0.01`
+- LMS equalizer:
+  - `eq_taps = 7`
   - `mu_train = 0.001`
   - `mu_dd = 0.0008`
-  - `num_pilots = min(400, N // 2)`
+
+### SDR Settings (`sdr_lab3.py`)
+- `sample_rate = 1e6`
+- `tx_carrier_freq_Hz = 915e6`
+- `rx_carrier_freq_Hz = 915e6`
+- `tx_gain_dB = -25`
+- `rx_gain_dB = 45`
+- `rx_agc_mode = 'manual'`
+- `rx_buffer_size = 500e3`
+- `tx_cyclic_buffer = True`
 
 ## Utility Scripts Added
 
