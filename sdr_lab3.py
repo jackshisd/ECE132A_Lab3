@@ -31,7 +31,7 @@ tx_cyclic_buffer = True         # cyclic nature of transmitter's buffer (True ->
 # ---------------------------------------------------------------
 # Initialize Pluto object using issued token.
 # ---------------------------------------------------------------
-sdr = adi.Pluto(token='yRm5GnxemTk') # create Pluto object
+sdr = adi.Pluto(token='TcqEuBfGov8') # create Pluto object
 sdr.sample_rate = int(sample_rate)   # set baseband sampling rate of Pluto
 
 # ---------------------------------------------------------------
