@@ -82,3 +82,46 @@ python3.10 run_lab3_pipeline.py
 
 - SER can vary due to lab interference/channel changes.
 - For fair comparisons, use multiple captures per setting and compare median SER.
+
+## Two-SDR OFDM Message Demo (New)
+
+Use `lab38_ofdm_two_sdr.py` to transmit a short UTF-8 message over OFDM using two Pluto SDRs.
+
+### Features
+
+- 64-point OFDM with CP length 16
+- QPSK data on 48 subcarriers + 4 pilot tones
+- Preamble-based frame sync
+- One-tap channel estimate + pilot phase correction
+
+### 1) Start TX SDR
+
+Set your TX token and run:
+
+```bash
+export PLUTO_TX_TOKEN="<tx-token>"
+python3.10 lab38_ofdm_two_sdr.py tx --message "HELLO FROM OFDM"
+```
+
+TX runs continuously (cyclic buffer) until `Ctrl+C`.
+
+### 2) Capture + Decode on RX SDR
+
+Set your RX token and run:
+
+```bash
+export PLUTO_RX_TOKEN="<rx-token>"
+python3.10 lab38_ofdm_two_sdr.py rx
+```
+
+The script prints the decoded message and saves capture artifacts to `lab3/`:
+
+- `lab3/ofdm_tx_frame.npy`
+- `lab3/ofdm_rx_capture.npy`
+
+### Optional Tuning
+
+- TX gain: `--tx-gain-db` (example `-40` to `-25`)
+- RX gain: `--rx-gain-db` (example `35` to `55`)
+- Carrier frequency: `--carrier-hz`
+- Sample rate: `--sample-rate`
